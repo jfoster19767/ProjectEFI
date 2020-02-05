@@ -8,7 +8,7 @@ function wwGraphSpecificCode(Stat_XXX_Matrix, Codes)
 
 % Regenerate our original plot, with seperators, colors and indexes
 seperators = nan(1,length(Stat_XXX_Matrix));
-win = 35;
+win = 1000;
 sep_Code = nan(1,length(Stat_XXX_Matrix));
 index = 1;
 for j = 1:length(Stat_XXX_Matrix)
@@ -80,7 +80,7 @@ end
 % stay for padding, then cut the rest. we keep track of how much we cut out
 % and apply that to seperators so the plots still line up.
 
-Specific_Stat_Matrix = nan(2*length(Stat_XXX_Matrix),12);
+Specific_Stat_Matrix = nan(4*length(Stat_XXX_Matrix),12);
 Specific_Stat_Index = 1;
 
 for i = 1:length(seperators)
@@ -102,8 +102,8 @@ for i = 1:length(seperators)
             continue
         end
         
-        previous_Time = Stat_XXX_Matrix(seperators(end-1),9);
-        Current_Time = Stat_XXX_Matrix(seperators(end-1)+1,9);
+        previous_Time = Stat_XXX_Matrix(seperators(end),9);
+        Current_Time = Stat_XXX_Matrix(seperators(end)+1,9);
         next_code = sep_Code(end);
         
         if ~strcmp(num2str(Current_Time - previous_Time), '0.01')
@@ -134,15 +134,19 @@ for i = 1:length(seperators)
         continue
     end
     
-    current_code = sep_Code(i);
-    next_code = sep_Code(i+1);
+    current_code = sep_Code(i-1);
+    next_code = sep_Code(i);
     Current_Time = Stat_XXX_Matrix(seperators(i),9);
     Future_Time = Stat_XXX_Matrix(seperators(i)+1,9);
  
-    if ~strcmp(num2str(Current_Time - Future_Time), '0.01')
-        if ~strcmp(num2str(Current_Time - Future_Time), '-59.99')
+    if ~strcmp(num2str(Current_Time - Future_Time), '-0.01')
+        if ~strcmp(num2str(Current_Time - Future_Time), '59.99')
             time_Jump = true;
         end
+    end
+    
+    if isnan(current_code)
+        time_Jump = true;
     end
     
     if current_code ~= next_code && time_Jump
