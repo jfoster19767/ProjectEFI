@@ -6,13 +6,16 @@ function wwGraphSpecificCode(Stat_XXX_Matrix, Stat_XXX_Matrix2, Codes)
 % of codes, [26, 36, 47]. One way to call this function is
 % wwGraphSpecificCode(Stat_CMA_Matrix, Stat_RAW_Matrix,[26, 36, 47])
 
+color_pallet = zeros(120,4);
+pallet_index = 1;
+
 for round = 1:2
     if round == 2
         Stat_XXX_Matrix = Stat_XXX_Matrix2;
     end
     % Regenerate our original plot, with seperators, colors and indexes
     seperators = nan(1,length(Stat_XXX_Matrix));
-    win = 1000;
+    win = 100;
     sep_Code = nan(1,length(Stat_XXX_Matrix));
     index = 1;
     for j = 1:length(Stat_XXX_Matrix)
@@ -227,7 +230,7 @@ for round = 1:2
     max13 = max(max(abs(Stat_XXX_Matrix(:,1:3))));
     max46 = max(max(abs(Stat_XXX_Matrix(:,4:6))));
     for S_plot = 1:6
-        subplot(6,1,S_plot)
+        subplot(7,1,S_plot)
         hold on
         for divider = 1:length(seperators)
             if divider == 1
@@ -247,6 +250,13 @@ for round = 1:2
                 if color == 0
                     color = [1 1 1];
                 end
+                if (~ismember(color(1), color_pallet(:,1)) || ~ismember(color(2), color_pallet(:,2)) || ~ismember(color(3), color_pallet(:,3))) & string(color) ~= ["1" "1" "1"]
+                    color_pallet(pallet_index,1) = color(1);
+                    color_pallet(pallet_index,2) = color(2);
+                    color_pallet(pallet_index,3) = color(3);
+                    color_pallet(pallet_index,4) = sep_Code(divider);
+                    pallet_index = pallet_index + 1;
+                end
                 plot([current_seperator current_seperator], [-2*max13 2*max13], 'Color', color);
                 fill([current_seperator current_seperator next_seperator next_seperator],[-2*max13 2*max13 2*max13 -2*max13], color);                 
             else
@@ -255,6 +265,13 @@ for round = 1:2
                 color = sscanf(hexVal(2:end),'%2x%2x%2x',[1 3])/255;
                 if color == 0
                     color = [1 1 1];
+                end
+                if (~ismember(color(1), color_pallet(:,1)) || ~ismember(color(2), color_pallet(:,2)) || ~ismember(color(3), color_pallet(:,3))) & string(color) ~= ["1" "1" "1"]
+                    color_pallet(pallet_index,1) = color(1);
+                    color_pallet(pallet_index,2) = color(2);
+                    color_pallet(pallet_index,3) = color(3);
+                    color_pallet(pallet_index,4) = sep_Code(divider);
+                    pallet_index = pallet_index + 1;
                 end
                 plot([current_seperator current_seperator], [-2*max46 2*max46], 'Color', color);
                 fill([current_seperator current_seperator next_seperator next_seperator],[-2*max46 2*max46 2*max46 -2*max46], color); 
@@ -267,29 +284,35 @@ for round = 1:2
     test = inputname(round);
     testIndex = find(test == '_');
 
-    subplot(6,1,1)
+    subplot(7,1,1)
     plot(Stat_XXX_Matrix(:,1),'Color', [1 1 1])
     axis([0 length(Stat_XXX_Matrix)+10 -2*max13 2*max13])
     title([test(testIndex(1)+1:testIndex(2)-1), ' ACCX, WindowSize:  ' + string(win)])
-    subplot(6,1,2)
+    subplot(7,1,2)
     plot(Stat_XXX_Matrix(:,2),'Color', [1 1 1])
     axis([0 length(Stat_XXX_Matrix)+10 -2*max13 2*max13])
     title([test(testIndex(1)+1:testIndex(2)-1), ' ACCY, WindowSize:  ' + string(win)])
-    subplot(6,1,3)
+    subplot(7,1,3)
     plot(Stat_XXX_Matrix(:,3),'Color', [1 1 1])
     axis([0 length(Stat_XXX_Matrix)+10 -2*max13 2*max13])
     title([test(testIndex(1)+1:testIndex(2)-1), ' ACCZ, WindowSize:  ' + string(win)])
-    subplot(6,1,4)
+    subplot(7,1,4)
     plot(Stat_XXX_Matrix(:,4),'Color', [1 1 1])
     axis([0 length(Stat_XXX_Matrix)+10 -2*max46 2*max46])
     title([test(testIndex(1)+1:testIndex(2)-1), ' GYROX, WindowSize:  ' + string(win)])
-    subplot(6,1,5)
+    subplot(7,1,5)
     plot(Stat_XXX_Matrix(:,5),'Color', [1 1 1])
     axis([0 length(Stat_XXX_Matrix)+10 -2*max46 2*max46])
     title([test(testIndex(1)+1:testIndex(2)-1), ' GYROY, WindowSize:  ' + string(win)])
-    subplot(6,1,6)
+    subplot(7,1,6)
     plot(Stat_XXX_Matrix(:,6),'Color', [1 1 1])
     axis([0 length(Stat_XXX_Matrix)+10 -2*max46 2*max46])
     title([test(testIndex(1)+1:testIndex(2)-1), ' GYROZ, WindowSize:  ' + string(win)])
+    subplot(7,1,7)
+    hold on;
+    for c = 1:pallet_index-1
+        fill([c c c+1 c+1],[-2*max46 2*max46 2*max46 -2*max46], color_pallet(c,1:3));
+    end
+    legend(string(color_pallet(1:pallet_index-1,4)))
 end
 end
