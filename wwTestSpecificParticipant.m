@@ -1,6 +1,6 @@
 %Developed by Jason Foster jf727@nau.edu Feb 2020
-%This function takes in stuff
-%this function returns graphs
+%This function takes in a matrix of participant data
+%this function returns graphs and confusion matrixes
 function wwTestSpecificParticipant(Big_Matrix)
     diary conf_mat;
     diary off;
